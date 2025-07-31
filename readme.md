@@ -18,19 +18,21 @@ Este proyecto implementa un sistema **RAG Multimodal** que permite realizar cons
 - Python 3.10 o superior  
 - Entorno virtual recomendado  
 - Acceso a la API de OpenAI
+- -Corpus
 
 
 ##  Instalación y Ejecución
 
 1. Clonar el repositorio.
-2. Recrear el entorno virtual: python -m venv .venv
+2. Descargar el corpus de flickr 8k, evidentemente por lo grande que és no se puede subir a github, ni tampoco el corpus de 1000 imágenes.
+3. Recrear el entorno virtual: python -m venv .venv
 .venv\Scripts\activate
-3. Instalar todas las dependencias, para esto se ha descrito en requirements.txt todo lo necesario
+4. Instalar todas las dependencias, para esto se ha descrito en requirements.txt todo lo necesario
  pip install -r requirements.txt
-4. Cambiar la API KEY en rag.py línea  número #8.
-5. Ejecutar /consultas/rag.py
-6. Ejecutar /consultas/consultar.py
-7. Ejecutar python app.py 
+5. Cambiar la API KEY en rag.py línea  número #8.
+6. Ejecutar /consultas/rag.py
+7. Ejecutar /consultas/consultar.py
+8. Ejecutar python app.py 
   $env:KMP_DUPLICATE_LIB_OK="TRUE"   # para evitar conflicto FAISS + Torch
  python app.py
   Abrir el navegador en: http://localhost:5000
