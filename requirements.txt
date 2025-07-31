@@ -1,0 +1,21 @@
+# --- Web & API ---
+Flask>=2.3
+flask-cors>=3.0
+
+# --- RAG / IA ---
+openai>=1.12               # para generar la narrativa
+torch>=2.2                 # backend de CLIP
+torchvision>=0.17          # utilidades de imagen
+transformers>=4.41         # modelo CLIP
+sentencepiece              # requerido por algunos tokenizers
+faiss-cpu>=1.7             # índice vectorial en CPU (Windows)
+
+# --- Utilidades ---
+numpy
+pandas
+pillow                     # carga/guardado de imágenes
+tqdm                       # barras de progreso
+deep-translator            # traducción ES↔EN
+
+# --- Opcional / calidad de vida ---
+python-dotenv              # leer variables de entorno (API keys)

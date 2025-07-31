@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador Multimodal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #fafafa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #2f2f2f;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 768px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      color: #2f2f2f;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      font-size: 1rem;
+      color: #6b6b6b;
+      font-weight: 400;
+    }
+
+    .search-container {
+      width: 100%;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 16px 50px 16px 20px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 26px;
+      font-size: 16px;
+      background: white;
+      transition: all 0.2s ease;
+      outline: none;
+      resize: none;
+      min-height: 52px;
+      max-height: 200px;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+
+    .search-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .input-actions {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 18px;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s ease;
+      color: #6b6b6b;
+    }
+
+    .action-btn:hover {
+      background: #f3f4f6;
+      color: #2f2f2f;
+    }
+
+    .submit-btn {
+      background: #2563eb;
+      color: white;
+    }
+
+    .submit-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .submit-btn:disabled {
+      background: #e5e7eb;
+      color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .tools-section {
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .tools-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: transparent;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #6b6b6b;
+      transition: all 0.2s ease;
+      margin-bottom: 1rem;
+    }
+
+    .tools-toggle:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+
+    .tools-toggle.active {
+      background: #eff6ff;
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+
+    .tools-content {
+      display: none;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 8px;
+    }
+
+    .tools-content.show {
+      display: block;
+      animation: slideDown 0.2s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tool-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      margin-bottom: 8px;
+    }
+
+    .tool-option:hover {
+      background: #f9fafb;
+    }
+
+    .tool-option:last-child {
+      margin-bottom: 0;
+    }
+
+    .tool-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: #f3f4f6;
+    }
+
+    .tool-info h3 {
+      font-size: 14px;
+      font-weight: 500;
+      color: #2f2f2f;
+      margin-bottom: 2px;
+    }
+
+    .tool-info p {
+      font-size: 12px;
+      color: #6b6b6b;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .upload-area {
+      border: 2px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 12px;
+    }
+
+    .upload-area:hover {
+      border-color: #2563eb;
+      background: #f8faff;
+    }
+
+    .upload-area.dragover {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+
+    .upload-icon {
+      font-size: 24px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .upload-text {
+      font-size: 14px;
+      color: #6b6b6b;
+      margin-bottom: 4px;
+    }
+
+    .upload-subtext {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .example-queries {
+      width: 100%;
+      margin-top: 2rem;
+    }
+
+    .example-title {
+      font-size: 14px;
+      color: #6b6b6b;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 8px;
+    }
+
+    .example-item {
+      padding: 12px 16px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .example-item:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+
+    /* Formularios ocultos para funcionalidad */
+    .hidden-forms {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        max-width: 100%;
+        padding: 0 1rem;
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .examples-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .search-input {
+        font-size: 16px; /* Previene zoom en iOS */
+      }
+    }
+
+    /* Estados de carga */
+    .loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .loading .submit-btn::after {
+      content: '';
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Buscador Multimodal</h1>
+      <p>Búsqueda usando texto o imágenes </p>
+    </div>
+
+    <!-- Búsqueda principal -->
+    <div class="search-container">
+      <textarea 
+        class="search-input" 
+        id="mainSearch"
+        placeholder="Pregunta lo que quieras"
+        rows="1"
+      ></textarea>
+      <div class="input-actions">
+        <button type="button" class="action-btn" id="voiceBtn" title="Búsqueda por voz">
+          🎤
+        </button>
+        <button type="button" class="action-btn" id="imageBtn" title="Subir imagen">
+          🖼️
+        </button>
+        <button type="submit" class="action-btn submit-btn" id="submitBtn" title="Enviar" disabled>
+          ➤
+        </button>
+      </div>
+    </div>
+
+    <!-- Herramientas expandibles -->
+    <div class="tools-section">
+      <button class="tools-toggle" id="toolsToggle">
+        <span>⚡</span>
+        <span>Herramientas</span>
+        <span style="margin-left: auto; font-size: 12px;">▼</span>
+      </button>
+      
+      <div class="tools-content" id="toolsContent">
+        <div class="tool-option" id="textSearchTool">
+          <div class="tool-icon">💬</div>
+          <div class="tool-info">
+            <h3>Búsqueda por Texto</h3>
+            <p>Busca información usando lenguaje natural</p>
+          </div>
+        </div>
+        
+        <div class="tool-option" id="imageSearchTool">
+          <div class="tool-icon">🖼️</div>
+          <div class="tool-info">
+            <h3>Búsqueda por Imagen</h3>
+            <p>Analiza y busca información de imágenes</p>
+          </div>
+        </div>
+        
+        <div class="upload-area" id="uploadArea" style="display: none;">
+          <div class="upload-icon">📤</div>
+          <div class="upload-text">Arrastra tu imagen aquí</div>
+          <div class="upload-subtext">o haz clic para seleccionar (JPG, PNG, GIF)</div>
+          <input type="file" class="file-input" id="fileInput" accept="image/*">
+        </div>
+      </div>
+    </div>
+
+    <!-- Ejemplos de consultas -->
+    <div class="example-queries">
+      <div class="example-title">Prueba con estos ejemplos:</div>
+      <div class="examples-grid">
+        <div class="example-item" data-query="dog">
+          Dog
+        </div>
+        <div class="example-item" data-query="car">
+          A car
+        </div>
+        <div class="example-item" data-query="Landscape">
+          Landscape
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formularios ocultos para envío -->
+  <div class="hidden-forms">
+    <form id="textForm" action="/query" method="post">
+      <input type="hidden" name="texto" id="hiddenTextInput">
+    </form>
+    
+    <form id="imageForm" action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="image" id="hiddenImageInput">
+    </form>
+  </div>
+
+  <script>
+    // Referencias DOM
+    const mainSearch = document.getElementById('mainSearch');
+    const submitBtn = document.getElementById('submitBtn');
+    const imageBtn = document.getElementById('imageBtn');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const toolsToggle = document.getElementById('toolsToggle');
+    const toolsContent = document.getElementById('toolsContent');
+    const textSearchTool = document.getElementById('textSearchTool');
+    const imageSearchTool = document.getElementById('imageSearchTool');
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const textForm = document.getElementById('textForm');
+    const imageForm = document.getElementById('imageForm');
+    const hiddenTextInput = document.getElementById('hiddenTextInput');
+    const hiddenImageInput = document.getElementById('hiddenImageInput');
+
+    // Auto-resize del textarea
+    mainSearch.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+      
+      // Habilitar/deshabilitar botón submit
+      submitBtn.disabled = !this.value.trim();
+    });
+
+    // Toggle herramientas
+    toolsToggle.addEventListener('click', function() {
+      const isActive = this.classList.contains('active');
+      
+      if (isActive) {
+        this.classList.remove('active');
+        toolsContent.classList.remove('show');
+        this.querySelector('span:last-child').textContent = '▼';
+      } else {
+        this.classList.add('active');
+        toolsContent.classList.add('show');
+        this.querySelector('span:last-child').textContent = '▲';
+      }
+    });
+
+    // Herramienta de búsqueda por texto
+    textSearchTool.addEventListener('click', function() {
+      uploadArea.style.display = 'none';
+      mainSearch.focus();
+    });
+
+    // Herramienta de búsqueda por imagen
+    imageSearchTool.addEventListener('click', function() {
+      uploadArea.style.display = uploadArea.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Botón de imagen en la barra principal
+    imageBtn.addEventListener('click', function() {
+      fileInput.click();
+    });
+
+    // Manejo de archivos
+    fileInput.addEventListener('change', handleFileSelect);
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    // Drag & Drop
+    uploadArea.addEventListener('dragover', handleDragOver);
+    uploadArea.addEventListener('dragleave', handleDragLeave);
+    uploadArea.addEventListener('drop', handleDrop);
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect({ target: { files } });
+      }
+    }
+
+    function handleFileSelect(e) {
+      const files = e.target.files;
+      if (files.length > 0) {
+        const file = files[0];
+        hiddenImageInput.files = files;
+        
+        // Mostrar loading y enviar
+        document.body.classList.add('loading');
+        setTimeout(() => {
+          imageForm.submit();
+        }, 100);
+      }
+    }
+
+    // Envío de búsqueda por texto
+    submitBtn.addEventListener('click', function() {
+      const query = mainSearch.value.trim();
+      if (query) {
+        hiddenTextInput.value = query;
+        document.body.classList.add('loading');
+        setTimeout(() => {
+          textForm.submit();
+        }, 100);
+      }
+    });
+
+    // Enter para enviar (Shift+Enter para nueva línea)
+    mainSearch.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (this.value.trim()) {
+          submitBtn.click();
+        }
+      }
+    });
+
+    // Ejemplos clickeables
+    document.querySelectorAll('.example-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const query = this.dataset.query;
+        mainSearch.value = query;
+        mainSearch.style.height = 'auto';
+        mainSearch.style.height = Math.min(mainSearch.scrollHeight, 200) + 'px';
+        submitBtn.disabled = false;
+        mainSearch.focus();
+      });
+    });
+
+    // Búsqueda por voz (simulada)
+    voiceBtn.addEventListener('click', function() {
+      // Aquí podrías implementar Web Speech API
+      alert('Búsqueda por voz próximamente disponible');
+    });
+
+    // Prevenir envío accidental de formularios ocultos
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && e.target.type === 'hidden') {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

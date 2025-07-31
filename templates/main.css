@@ -1,0 +1,30 @@
+body{
+  font-family: system-ui, sans-serif;
+  background:#f2f4f7;
+  padding:30px;
+  color:#333;
+}
+h1{margin-bottom:20px}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:20px;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);
+}
+.card input{width:70%;padding:8px;margin-right:10px}
+button{
+  padding:8px 18px;background:#0d6efd;border:none;
+  color:#fff;border-radius:8px;cursor:pointer
+}
+button:hover{background:#084ccb}
+.galeria{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:15px;margin-top:15px
+}
+.galeria img{
+  width:100%;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.1)
+}
+.volver{display:inline-block;margin-bottom:15px;text-decoration:none;color:#0d6efd}
+.texto{margin-top:10px;white-space:pre-line}

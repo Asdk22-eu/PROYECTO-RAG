@@ -1,0 +1,15 @@
+# Entorno virtual
+.venv/
+
+# Archivos pesados y locales
+/media/
+corpus/
+embeddings/
+*.faiss
+*.pkl
+/data
+
+# Archivos de sistema y caché
+__pycache__/
+*.pyc
+.env
